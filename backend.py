@@ -1,8 +1,7 @@
 from flask import send_file
 from flask import Flask
-import os, sys
 import winreg as reg
-import json, uuid, pickle, pyperclip, requests
+import json, uuid, pickle, pyperclip, requests, os, sys
 
 app = Flask(__name__)
 PORT = 8080
@@ -59,10 +58,13 @@ def add_menu_option():
 
     # create inner key
     key1 = reg.CreateKey(key, r"command")
-    reg.SetValue(key1, '', reg.REG_SZ, hidden_terminal + f' {cwd}\\add_key.py "%1"')  # use hidden_terminal to to hide terminal
+    reg.SetValue(key1, '', reg.REG_SZ, hidden_terminal + f' {cwd}\\backend.py "%1"')  # use hidden_terminal to to hide terminal
 
 def start_flask():
     app.run(host = HOST, port = PORT, threaded = True, debug = False)
 
 if __name__ == '__main__':
+    if len(sys.argv) == 2:
+        add_key(sys.argv[1])
+        exit()
     start_flask()
