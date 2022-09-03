@@ -1,10 +1,8 @@
-from tarfile import PAX_FIELDS
 from tkinter import *
 from pystray import MenuItem as item
 import pystray
-from PIL import Image, ImageTk
+from PIL import Image
 import backend, threading
-import tkinter.scrolledtext as st
 
 PADX = 5
 PADY = 5

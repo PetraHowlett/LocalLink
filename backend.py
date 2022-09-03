@@ -1,7 +1,7 @@
 from flask import send_file
 from flask import Flask
 import winreg as reg
-import json, uuid, pickle, pyperclip, requests, os, sys
+import json, uuid, pyperclip, requests, os, sys
 
 app = Flask(__name__)
 PORT = 8080
@@ -63,14 +63,6 @@ def remove_menu_option():
     """
     Must be run as admin.
     """
-    # Get path of current working directory and python.exe
-    cwd = os.getcwd()
-    python_exe = sys.executable
-
-    # optional hide python terminal in windows
-    hidden_terminal = '\\'.join(python_exe.split('\\')[:-1])+"\\pythonw.exe"
-
-
     # Set the path of the context menu (right-click menu)
     key_path = r'*\\shell\\ShareLink\\'
 
