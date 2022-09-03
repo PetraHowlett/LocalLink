@@ -50,15 +50,39 @@ def add_menu_option():
 
 
     # Set the path of the context menu (right-click menu)
-    key_path = r'*\\shell\\ShareLink\\' # Change 'Organiser' to the name of your project
+    key_path = r'*\\shell\\ShareLink\\'
 
     # Create outer key
     key = reg.CreateKey(reg.HKEY_CLASSES_ROOT, key_path)
-    reg.SetValue(key, '', reg.REG_SZ, '&Share Link')  # Change 'Organise folder' to the function of your script
+    reg.SetValue(key, '', reg.REG_SZ, '&Share Link')
 
     # create inner key
     key1 = reg.CreateKey(key, r"command")
     reg.SetValue(key1, '', reg.REG_SZ, hidden_terminal + f' {cwd}\\backend.py "%1"')  # use hidden_terminal to to hide terminal
+
+def remove_menu_option():
+    """
+    Must be run as admin.
+    """
+    # Get path of current working directory and python.exe
+    cwd = os.getcwd()
+    python_exe = sys.executable
+
+    # optional hide python terminal in windows
+    hidden_terminal = '\\'.join(python_exe.split('\\')[:-1])+"\\pythonw.exe"
+
+
+    # Set the path of the context menu (right-click menu)
+    key_path = r'*\\shell\\ShareLink\\'
+
+    # Open inner key
+    key = reg.OpenKey(reg.HKEY_CLASSES_ROOT, key_path)
+
+    # Delete inner key
+    reg.DeleteKey(key, r"command")
+
+    # Delete outer key
+    reg.DeleteKey(reg.HKEY_CLASSES_ROOT, key_path)
 
 def start_flask():
     app.run(host = HOST, port = PORT, threaded = True, debug = False)

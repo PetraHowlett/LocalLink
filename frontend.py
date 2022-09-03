@@ -11,7 +11,8 @@ PADY = 5
 # Create an instance of tkinter frame or window
 win=Tk()
 
-win.title("Local Cloud")
+win.resizable(0, 0)
+win.title("LocalLink")
 # Set the size of the window
 win.geometry("700x350")
 
@@ -38,47 +39,53 @@ def background(func, args):
     th.start()
     
 def format_keys(keys):
-    formatted = ""
+    formatted_keys = []
     for key,value in keys.items():
-        formatted += "Key = {key}, File = {file}\n".format(key = key, file = value)
-    return formatted
+        formatted_keys.append("Key = {key}, File = {file}\n".format(key = key, file = value))
+    return formatted_keys
 
 def update_keys_box(keys_box):
     keys = format_keys(backend.get_keys())
-    keys_box.configure(state ='normal')
-    keys_box.delete(1.0,END)
-    keys_box.insert(INSERT,keys)
-    keys_box.configure(state ='disabled')
+    keys_box.delete(0,END)
+    for index, key in enumerate(keys):
+        keys_box.insert(index,key)
 
 def add_components():
-    #Start flask button
-    #start_flask_button = Button(win,text='Start Flask', padx=PADX, pady=PADY, command = lambda : background(download.start_flask, ()))  #args must be a tuple even if it is only one
-    #start_flask_button.pack(side=LEFT) 
+    
+    win.rowconfigure(0,weight=3)
+    #win.rowconfigure(1,weight=1)
+    #win.rowconfigure(2,weight=1)
+    
 
     #Add ShareLink button
     add_menu_share_label = Label(win, text="Add Right-Click ShareLink option on files.")
-    add_menu_share = Button(win,text='Enable ShareLink', padx=PADX, pady=PADY, command = lambda : background(backend.add_menu_option, ()))  #args must be a tuple even if it is only one
-    add_menu_share_label.pack()
-    add_menu_share.pack(side=LEFT) 
+    add_menu_share = Button(win,text='Enable ShareLink', command = lambda : background(backend.add_menu_option, ()))
+    add_menu_share_label.grid(row=0, column=0, sticky=W, padx=PADX, pady=PADY)#
+    add_menu_share.grid(row=0, column=1, sticky=W, padx=PADX, pady=PADY,)
 
-    #Add file button
+    #Remove ShareLink button
+    add_menu_share_label = Label(win, text="Remove Right-Click ShareLink option on files.")
+    add_menu_share = Button(win,text='Disable ShareLink', command = lambda : background(backend.remove_menu_option, ()))
+    add_menu_share_label.grid(row=1, column=0, sticky=W, padx=PADX, pady=PADY)
+    add_menu_share.grid(row=1, column=1, sticky=W, padx=PADX, pady=PADY,)
+
+    #Add file entry and button
     new_key = StringVar()
-    add_key_entry = Entry(win, textvariable=new_key)
-    add_key_entry.pack(fill='x', expand=True)
-    add_key_button = Button(win,text='Add Key', padx=PADX, pady=PADY, command = lambda : background(backend.add_key, (new_key.get(),)))  #args must be a tuple even if it is only one
-    add_key_button.pack(side=LEFT)
-
-    #Keys list box
-    keys = StringVar()
-    keys.set(format_keys(backend.get_keys()))
-    keys_box_area = st.ScrolledText(win, width = 150, height = 10, padx=PADX, pady=PADY)
-    keys_box_area.insert(INSERT,keys.get())
-    keys_box_area.configure(state ='disabled')
-    keys_box_area.pack()
+    add_key_entry = Entry(win, textvariable=new_key, width = 80)
+    add_key_button = Button(win,text='Add Key', command = lambda : background(backend.add_key, (new_key.get(),)))
+    add_key_entry.grid(row=2, column=0, sticky=W, columnspan=1, padx=PADX, pady=PADY)
+    add_key_button.grid(row=2, column=1, sticky=W, padx=PADX, pady=PADY)
 
     #Refresh keys list button
-    refresh_keys_button = Button(win,text='Refresh Keys', padx=PADX, pady=PADY, command = lambda : background(update_keys_box, (keys_box_area,)))  #args must be a tuple even if it is only one
-    refresh_keys_button.pack(side=LEFT)
+    refresh_keys_button = Button(win,text='Refresh Keys', command = lambda : background(update_keys_box, (keys_box_area,)))
+    refresh_keys_button.grid(row=2, column=2, sticky=W, padx=PADX, pady=PADY)
+
+    #Keys list box
+    keys = format_keys(backend.get_keys())
+    keys_box_area = Listbox(win, width = 100, height = 10)
+    update_keys_box(keys_box_area)
+    keys_box_area.grid(row=3, column=0, columnspan=3, padx=PADX, pady=PADY)
+
 
     
     
