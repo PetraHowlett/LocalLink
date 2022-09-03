@@ -13,6 +13,7 @@ win=Tk()
 
 win.resizable(0, 0)
 win.title("LocalLink")
+win.iconbitmap("favicon.ico")
 # Set the size of the window
 win.geometry("700x350")
 
@@ -31,8 +32,23 @@ def hide_window():
    win.withdraw()
    image=Image.open("favicon.ico")
    menu=(item('Quit', quit_window), item('Show', show_window))
-   icon=pystray.Icon("name", image, "Local Cloud client", menu)
+   icon=pystray.Icon("name", image, "LocalLink client", menu)
    icon.run()
+
+def open_popup(msg):
+   top = Toplevel(win)
+   top.resizable(0, 0)
+   top.iconbitmap("favicon.ico")
+   top.geometry("600x50")
+   top.title("An error has occured")
+   text = Label(top, text= msg)
+   text.pack()
+
+def foreground(func, args):
+    try: 
+        func(*args)
+    except Exception as error:
+        open_popup("The following error was returned: {error}".format(error = error))
 
 def background(func, args):
     th = threading.Thread(target=func, args=args, daemon=True)
@@ -51,21 +67,17 @@ def update_keys_box(keys_box):
         keys_box.insert(index,key)
 
 def add_components():
-    
     win.rowconfigure(0,weight=3)
-    #win.rowconfigure(1,weight=1)
-    #win.rowconfigure(2,weight=1)
-    
 
     #Add ShareLink button
     add_menu_share_label = Label(win, text="Add Right-Click ShareLink option on files.")
-    add_menu_share = Button(win,text='Enable ShareLink', command = lambda : background(backend.add_menu_option, ()))
+    add_menu_share = Button(win,text='Enable ShareLink', command = lambda : foreground(backend.add_menu_option, ()))
     add_menu_share_label.grid(row=0, column=0, sticky=W, padx=PADX, pady=PADY)#
     add_menu_share.grid(row=0, column=1, sticky=W, padx=PADX, pady=PADY,)
 
     #Remove ShareLink button
     add_menu_share_label = Label(win, text="Remove Right-Click ShareLink option on files.")
-    add_menu_share = Button(win,text='Disable ShareLink', command = lambda : background(backend.remove_menu_option, ()))
+    add_menu_share = Button(win,text='Disable ShareLink', command = lambda : foreground(backend.remove_menu_option, ()))
     add_menu_share_label.grid(row=1, column=0, sticky=W, padx=PADX, pady=PADY)
     add_menu_share.grid(row=1, column=1, sticky=W, padx=PADX, pady=PADY,)
 
@@ -84,19 +96,11 @@ def add_components():
     keys = format_keys(backend.get_keys())
     keys_box_area = Listbox(win, width = 100, height = 10)
     update_keys_box(keys_box_area)
-    keys_box_area.grid(row=3, column=0, columnspan=3, padx=PADX, pady=PADY)
-
-
-    
-    
+    keys_box_area.grid(row=3, column=0, columnspan=3, padx=PADX, pady=PADY)  
 
 add_components()
 background(backend.start_flask, ())
 
-
-
 win.protocol('WM_DELETE_WINDOW', hide_window)
-
-#keys_box_area.after(1000, update_keys)
 
 win.mainloop()

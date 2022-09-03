@@ -16,7 +16,6 @@ def get_keys():
 def generate_key():
     return str(uuid.uuid4())
 
-
 @app.route('/<path:key>',methods = ['GET','POST'])
 def get_files(key):
     keys = get_keys()
