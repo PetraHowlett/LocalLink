@@ -6,7 +6,8 @@ import json, uuid, pyperclip, requests, os, sys
 app = Flask(__name__)
 PORT = 8080
 HOST = "0.0.0.0"
-KEYS = r'D:\GITHUB\flask_test\keys.json'
+SCRIPT_DIR=os.path.dirname(os.path.abspath(__file__))
+KEYS = os.path.join(SCRIPT_DIR, "keys.json")
 def get_keys():
     with open(KEYS) as f:
         data = f.read()
