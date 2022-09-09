@@ -3,3 +3,4 @@ Pillow==9.2.0
 pyperclip==1.8.2
 pystray==0.19.4
 requests==2.27.1
+auto-py-to-exe==2.22.0

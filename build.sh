@@ -1,0 +1,1 @@
+pyinstaller --noconfirm --onefile --windowed --icon "favicon.ico" --name "locallink" --add-data "favicon.ico;."  "frontend.py"
